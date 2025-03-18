@@ -2,6 +2,7 @@ import cluster from "cluster";
 import os from "os";
 import { closeMongoConnection } from "./config/dbConnect";
 import app from "./app";
+import { config } from "./config/config";
 
 const numCPUs = os.cpus().length;
 
@@ -15,7 +16,7 @@ if (cluster.isPrimary) {
 
     cluster.on("exit", (worker) => {
         console.log(`Worker ${worker.process.pid} died. Restarting...`);
-        // cluster.fork();
+        cluster.fork();
     });
 } else {
 
@@ -23,8 +24,7 @@ if (cluster.isPrimary) {
     process.on("SIGTERM", closeMongoConnection); // Handle process termination
     process.on("exit", closeMongoConnection); // Handle process exit
 
-    const PORT = process.env.PORT || 3001;
-    app.listen(PORT, () => {
-        console.log(`Worker ${process.pid} started on port ${PORT}`);
+    app.listen(config.port, () => {
+        console.log(`Worker ${process.pid} started on port ${config.port}`);
     });
 }

@@ -1,9 +1,7 @@
-import dotenv from "dotenv"
 import mongoose from "mongoose";
+import { config } from "./config";
 
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase"; // Replace with your MongoDB URL
+const MONGO_URI = config.mongo_uri;
 
 export const connectDb = () => {
     mongoose

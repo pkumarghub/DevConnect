@@ -6,6 +6,8 @@ import cors from "cors";
 import winston from "winston";
 import expressWinston from "express-winston";
 import { connectDb } from "./config/dbConnect";
+import authRoutes from "./routes/User.route"
+import { errorHandler } from "./middlewares/errorHandler";
 
 const app = express();
 
@@ -55,25 +57,13 @@ app.use(
 );
 
 // Routes
-app.get("/", (req: Request, res: Response) => {
-    res.json({ message: "Server is running!" });
-});
-
-app.get("/heavy", async (req: Request, res: Response) => {
-    // Simulating heavy processing
-    const heavyCalculation = Array(1e7)
-        .fill(0)
-        .map(() => Math.random());
-    res.json({ result: heavyCalculation.length });
-});
+app.use('/auth', authRoutes);
+app.use(errorHandler);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     logger.error(err.message);
     res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
 });
-
-
-
 
 export default app;
