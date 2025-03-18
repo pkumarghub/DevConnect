@@ -9,7 +9,9 @@
 /coverage
 
 # production
-/build
+/dist
+
+error.log
 
 # misc
 .DS_Store
