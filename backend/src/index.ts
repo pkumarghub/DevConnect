@@ -3,6 +3,7 @@ import os from "os";
 import { closeMongoConnection } from "./config/dbConnect";
 import app from "./app";
 import { config } from "./config/config";
+import swaggerDocs from "./utils/swagger";
 
 const numCPUs = os.cpus().length;
 
@@ -26,5 +27,7 @@ if (cluster.isPrimary) {
 
     app.listen(config.port, () => {
         console.log(`Worker ${process.pid} started on port ${config.port}`);
+
+        swaggerDocs(app, Number(config.port));
     });
 }
