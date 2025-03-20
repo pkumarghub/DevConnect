@@ -12,6 +12,7 @@
 /dist
 
 error.log
+combined.log
 
 # misc
 .DS_Store
