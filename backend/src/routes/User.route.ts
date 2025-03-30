@@ -1,5 +1,6 @@
 import express from 'express';
 import { UserController } from '../controllers/UserController';
+import { validateUser } from '../middleware/validation';
 
 const router = express.Router();
 /**
@@ -40,7 +41,9 @@ const router = express.Router();
  *       500:
  *         description: Registration failed
  */
-router.post('/register', UserController.register);
+router.post('/user/register', validateUser, UserController.register);
 router.post('/login', UserController.login);
+router.put('/user/update', UserController.login);
+router.delete('/user/delete', UserController.deleteUser);
 
 export default router;

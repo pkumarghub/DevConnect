@@ -3,9 +3,12 @@ import User from '../models/User';
 import { IUser } from '../interface/User';
 
 export class UserService {
-    static async register(username: string, password: string): Promise<IUser> {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, password: hashedPassword });
+    static async register(body:IUser): Promise<IUser> {
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const user = new User({ 
+            ...body,
+            password: hashedPassword
+         });
         await user.save();
         return user;
     }
@@ -18,5 +21,9 @@ export class UserService {
         if (!passwordMatch) return null;
 
         return user;
+    }
+
+    static async deleteUser(username: string): Promise<IUser | null> {
+        return User.findOneAndDelete({username});
     }
 }
