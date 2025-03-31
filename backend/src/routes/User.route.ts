@@ -1,6 +1,6 @@
 import express from 'express';
 import { UserController } from '../controllers/UserController';
-import { validateUser } from '../middleware/validation';
+import { validateUser, validateUserForFollowerApi, validateUserForUnFollowerApi } from '../middleware/validation';
 
 const router = express.Router();
 /**
@@ -46,5 +46,8 @@ router.post('/login', UserController.login);
 router.post('/user/get-details', UserController.getUserDetails)
 router.put('/user/update', UserController.updateUser);
 router.delete('/user/delete', UserController.deleteUser);
+
+router.post('/user/add-as-follower',validateUserForFollowerApi, UserController.addAsFollower);
+router.post('/user/remove-as-follower',validateUserForUnFollowerApi, UserController.removeAsFollower);
 
 export default router;

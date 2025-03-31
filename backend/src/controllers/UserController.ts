@@ -80,7 +80,7 @@ export class UserController {
             if (!username) {
                 res.status(400).json({ message: "Username is required." })
             }
-            
+
             const userDetails = await UserService.getUserDetails(username);
             if (userDetails) {
                 res.status(200).json({ userDetails, message: "User details fetched successfully." })
@@ -90,6 +90,30 @@ export class UserController {
 
         } catch (error) {
             res.status(500).json({ error: 'Error in getting user details', details: (error as Error).message })
+        }
+    }
+
+    static async addAsFollower(req: Request, res: Response): Promise<void> {
+        try {
+            const { loggedInUser, userToBeFollowed } = req.body;
+            const userDetails = await UserService.addAsFollower(loggedInUser, userToBeFollowed);
+
+            res.status(200).json({ userDetails })
+
+        } catch (error) {
+            res.status(500).json({ error: 'Add follower operation failed.', details: (error as Error).message })
+        }
+    }
+    
+    static async removeAsFollower(req: Request, res: Response): Promise<void> {
+        try {
+            const { loggedInUser, userToBeUnFollowed } = req.body;
+            const userDetails = await UserService.removeAsFollower(loggedInUser, userToBeUnFollowed);
+
+            res.status(200).json({ userDetails })
+
+        } catch (error) {
+            res.status(500).json({ error: 'Remove follower operation failed.', details: (error as Error).message })
         }
     }
 }

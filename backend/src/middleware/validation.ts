@@ -16,3 +16,29 @@ export const validateUser: RequestHandler[] = [
         next();
     }
 ]
+
+export const validateUserForFollowerApi: RequestHandler[] = [
+    body('loggedInUser').isString().notEmpty().withMessage('LoggedIn username can not be empty'),
+    body('userToBeFollowed').isString().notEmpty().withMessage('User to be followed can not be empty'),
+    (req: Request, res: Response, next: NextFunction) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+        }
+        next();
+    }
+]
+
+export const validateUserForUnFollowerApi: RequestHandler[] = [
+    body('loggedInUser').isString().notEmpty().withMessage('LoggedIn username can not be empty'),
+    body('userToBeUnFollowed').isString().notEmpty().withMessage('User to be unfollowed can not be empty'),
+    (req: Request, res: Response, next: NextFunction) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+        }
+        next();
+    }
+]

@@ -34,4 +34,32 @@ export class UserService {
     static async getUserDetails(username: string): Promise<IUser | null> {
         return User.findOne({ username })
     }
+
+    static async addAsFollower(loggedInUser: string, userToBeFollowed: string): Promise<IUser | null> {
+
+        const loggedInUserDetails = await User.findOne({ username: loggedInUser }, { _id: 1, following: 1 })
+        const getUserToBeFollowedId = await User.findOne({ username: userToBeFollowed }, { _id: 1, followers: 1 });
+
+        const newFollowersList = [...(getUserToBeFollowedId?.followers || []), { _id: loggedInUserDetails?._id }];
+        await User.findOneAndUpdate({ username: userToBeFollowed }, { followers: newFollowersList }, { new: true })
+
+        const newFollowingList = [...(loggedInUserDetails?.following || []), { _id: getUserToBeFollowedId?._id }];
+        const updatedUserData = await User.findOneAndUpdate({ username: loggedInUser }, { following: newFollowingList });
+
+        return updatedUserData;
+    }
+    
+    static async removeAsFollower(loggedInUser: string, userToBeUnFollowed: string): Promise<IUser | null> {
+
+        const loggedInUserDetails = await User.findOne({ username: loggedInUser }, { _id: 1, following: 1 })
+        const getUserToBeUnFollowedId = await User.findOne({ username: userToBeUnFollowed }, { _id: 1, followers: 1 });
+
+        const newFollowersList = getUserToBeUnFollowedId?.followers.filter((ele: { equals: (id: any) => boolean }) => !ele.equals(loggedInUserDetails?._id));
+        await User.findOneAndUpdate({ username: userToBeUnFollowed }, { followers: newFollowersList }, { new: true })
+
+        const newFollowingList = loggedInUserDetails?.following.filter((ele: { equals: (id: any) => boolean }) => !ele.equals(getUserToBeUnFollowedId?._id));
+        const updatedUserData = await User.findOneAndUpdate({ username: loggedInUser }, { following: newFollowingList }, { new: true });
+
+        return updatedUserData;
+    }
 }
