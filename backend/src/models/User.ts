@@ -1,13 +1,17 @@
 import mongoose, { Schema, Model } from 'mongoose';
 import { IUser, UserRole } from "../interface/User";
 
+const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.substring(1);
+}
+
 // Define Schema
 const userSchema: Schema<IUser> = new Schema({
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     role: { type: String, required: true, default: UserRole.Admin, enum: Object.values(UserRole) },
-    fullName: { type: String },
+    fullName: { type: String, set: capitalizeFirstLetter },
     bio: { type: String },
     experience: [
         {
@@ -27,7 +31,9 @@ const userSchema: Schema<IUser> = new Schema({
     likesReceived: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-});
+},
+    { strict: true } // This ensures only defined fields are allowed
+);
 
 // Create and Export Model
 const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);

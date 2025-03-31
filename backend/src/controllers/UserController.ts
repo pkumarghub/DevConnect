@@ -37,24 +37,59 @@ export class UserController {
             res.status(500).json({ error: 'Login failed', details: (error as Error).message });
         }
     }
-    
+
     static async deleteUser(req: Request, res: Response): Promise<void> {
-        try{
+        try {
             const username = req.body?.username || "";
-            if((username === "")){
-                res.status(400).json({error: "Username is required."});
+            if ((username === "")) {
+                res.status(400).json({ error: "Username is required." });
             }
 
-            const user  = await UserService.deleteUser(username);
-            if(user) {
-                res.status(200).json({message: "User deleted successfully."})
+            const user = await UserService.deleteUser(username);
+            if (user) {
+                res.status(200).json({ message: "User deleted successfully." })
             } else {
-                res.status(400).json({message: "User not found in database."})
+                res.status(400).json({ message: "User not found in database." })
             }
 
 
-        } catch(error) {
+        } catch (error) {
             res.status(500).json({ error: 'User Deletion failed', details: (error as Error).message });
+        }
+    }
+
+    static async updateUser(req: Request, res: Response): Promise<void> {
+        try {
+            const { username, ...rest } = req.body;
+            const updateUserResponse = await UserService.updateUser(username, rest);
+
+            if (updateUserResponse) {
+                res.status(200).json({ user: updateUserResponse, message: "User updated successfully." })
+            } else {
+                res.status(400).json({ message: "User not found." })
+            }
+
+        } catch (error) {
+            res.status(500).json({ error: 'User updation failed', details: (error as Error).message })
+        }
+    }
+
+    static async getUserDetails(req: Request, res: Response): Promise<void> {
+        try {
+            const { username } = req.body;
+            if (!username) {
+                res.status(400).json({ message: "Username is required." })
+            }
+            
+            const userDetails = await UserService.getUserDetails(username);
+            if (userDetails) {
+                res.status(200).json({ userDetails, message: "User details fetched successfully." })
+            } else {
+                res.status(400).json({ message: "User not found." })
+            }
+
+        } catch (error) {
+            res.status(500).json({ error: 'Error in getting user details', details: (error as Error).message })
         }
     }
 }

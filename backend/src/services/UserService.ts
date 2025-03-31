@@ -3,12 +3,12 @@ import User from '../models/User';
 import { IUser } from '../interface/User';
 
 export class UserService {
-    static async register(body:IUser): Promise<IUser> {
+    static async register(body: IUser): Promise<IUser> {
         const hashedPassword = await bcrypt.hash(body.password, 10);
-        const user = new User({ 
+        const user = new User({
             ...body,
             password: hashedPassword
-         });
+        });
         await user.save();
         return user;
     }
@@ -24,6 +24,14 @@ export class UserService {
     }
 
     static async deleteUser(username: string): Promise<IUser | null> {
-        return User.findOneAndDelete({username});
+        return User.findOneAndDelete({ username });
+    }
+
+    static async updateUser(username: string, body: IUser): Promise<IUser | null> {
+        return User.findOneAndUpdate({ username }, body, { new: true });
+    }
+
+    static async getUserDetails(username: string): Promise<IUser | null> {
+        return User.findOne({ username })
     }
 }
