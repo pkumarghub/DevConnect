@@ -7,6 +7,7 @@ import winston from "winston";
 import expressWinston from "express-winston";
 import { connectDb } from "./config/dbConnect";
 import authRoutes from "./routes/User.route"
+import postRoutes from "./routes/Post.routes"
 import { errorHandler } from "./middlewares/errorHandler";
 
 const app = express();
@@ -58,6 +59,7 @@ app.use(
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/post', postRoutes);
 app.use(errorHandler);
 
 // Error handling middleware
